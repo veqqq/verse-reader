@@ -27,24 +27,33 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 ### Performance
 
 
-3.11.24:
+Now with hyperfine:
+
+|                                                  | time                | user     | sys      | size (MB) |
+| ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
+| Current (bookless)                               | 294.8 ms ±  29.3 ms | 229.2 ms | 64.1 ms  | 11.43     |
+| My Comp. parse                                   | 315.3 ms ±  28.6 ms | 251.0 ms | 64.3 ms  | 12        |
+| Interp.                                          | 743.4 ms ±  37.2 ms | 690.0 ms | 48.7 ms  |           |
+
+3.11.24 with a slower kernel:
 
 |                                                  | real   | user   | sys        | size (MB) |
 | ------------------------------------------------ | ------ | ------ | ---------- | ----------|
-| Current (bookless)                               | 0.390s | 0.290s | 0.100s     | 11.6      |
-| R. comp. parse                                   | 0.420s | 0.307s | 0.113s     | 12.0      |
-| My comp. parse                                   | 0.421s | 0.306s | 0.115s     | 12.0      |
+| Current (bookless)                               | 0.390s | 0.290s | 0.100s     | 11.43     |
+| R. comp. parse                                   | 0.420s | 0.307s | 0.113s     | 12        |
+| My comp. parse                                   | 0.421s | 0.306s | 0.115s     | 12        |
+| Interp.                                          | 0.951s | 0.771s | 0.72s      |           |
 
-These are 2.11.24. 3.11.24 on the same things are slower, worrying, perhaps my computer's dying....
+~~These are 2.11.24. 3.11.24 on the same things are slower, worrying, perhaps my computer's dying....~~ I reverted to a previous linux kernel though things still aren't optimal.
 
-|                                                  | real   | user   | sys        |
-| ------------------------------------------------ | ------ | ------ | ---------- |
-| current                                          | 0.293s | 0.234s | 0.064s     |
-| [reference](https://github.com/lukesmithxyz/kjv) | 0.114s | 0.139s | 0.023s     |
-| interp.                                          | 0.757s | 0.683s | 0.074s     |
-| R. lines                                         | 0.777s | 0.704s | 0.074s     |
-| R.comp. parse                                    | 0.293s | 0.234s | 0.064s     |
-| My comp. parse                                   | 0.292s | 0.216s | 0.076s     |
+|                                                  | real   | user   | sys        | size (MB) |
+| ------------------------------------------------ | ------ | ------ | ---------- | ----------|
+| current (bookless)                               | 0.285s | 0.229s | 0.056s     | 11.43     |
+| [reference](https://github.com/lukesmithxyz/kjv) | 0.114s | 0.139s | 0.023s     |           |
+| Interp.                                          | 0.757s | 0.683s | 0.074s     |           |
+| R. lines                                         | 0.777s | 0.704s | 0.074s     |           |
+| R.comp. parse                                    | 0.293s | 0.234s | 0.064s     | 12        |
+| My comp. parse                                   | 0.292s | 0.216s | 0.076s     | 12        |
 
 
 - current: `time ./kjvr gen 1`
