@@ -52,9 +52,6 @@ BoM,3 Ne.,bm,3-ne,6,11,"For there were many merchants in the land, and also many
 19 book and verse, but book abreviated
 |#
 
-; (define (split-csv-line line) ; keeping as a hilarious monument and reminder to explore the libraries first
-;   (regexp-split #px",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)" line)) ; #ToDo: replace with csv lib
-
 (require csv-reading)
 (define (split-csv-line line)
   (call-with-input-string line

@@ -4,9 +4,6 @@
 ; #ToDo: make list of works with similar structure
 ;    ; Vedas, Quran, Book of Mormon, Buddhist things? Chinese Classic of Poetry
 ;    ; Stephen Langton added chapters in the 13th c. and Robert Estienne verses in the 16th, which inspired philologists approaching other books
-; #ToDo: find/produce equivalently formated texts y/n?
-; #ToDo: expand to things without this format y/n?
-; #ToDo: maybe go in a direction with poetry, if I can find a word-> phoneme dictionary. But data cleaning issues due to modern printings removing contractions like "th'art" etc. Hmhmhm
 
 (require racket/string
          racket/cmdline
@@ -23,7 +20,6 @@
   
   ; Changed to prefab for compile-time support
   (struct bible-verse (
-                      ; [book #:mutable]
                       [abbrev #:mutable]
                       [chapter #:mutable]
                       [verse #:mutable]
@@ -35,9 +31,9 @@
     (define parts (string-split line "\t"))
     (if (= (length parts) 5)
         (bible-verse
-        ;  (list-ref parts 0)               ; book
+         ;; note, no book
          (string-downcase (list-ref parts 1)) ; abbreviation
-         (string->number (list-ref parts 2)) ; chapter,  skipped 2, it's ordinal of books in tsv #ToDo: eliminate ordinals from tsv and change this
+         (string->number (list-ref parts 2)) ; chapter
          (string->number (list-ref parts 3)) ; verse
          (list-ref parts 4))              ; text
         (begin
@@ -45,7 +41,6 @@
           #f)))
   
   (provide bible-verse bible-verse? parse-verse-line
-          ;  bible-verse-book
            bible-verse-abbrev 
            bible-verse-chapter bible-verse-verse 
            bible-verse-text))
@@ -68,20 +63,11 @@
     (syntax-case stx ()
       [(_) #`(quote #,kjv-verses)])))
 
-
 ;; Logic Query etc. Parsing and Handling
 
-; ; Match book names or abbrv inputs
-; (define (book-matches? verse book-query)
-;   (define query (string-downcase book-query))
-;   ; (or (string-prefix? query (string-downcase (bible-verse-book verse)))
-;   ;     (string-prefix? query (string-downcase (bible-verse-abbrev verse))))
-;       (string-prefix? query (bible-verse-abbrev verse)))
-
 (define (display-verse verse)
-  ; (printf "~a ~a:~a ~a\n"
+  ; (printf "~a:~a ~a\n"
     (printf "~a\n"
-          ; (bible-verse-book verse)
           ; (bible-verse-chapter verse)
           ; (bible-verse-verse verse)
           (bible-verse-text verse)))

@@ -31,7 +31,7 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
-| Current (bookless)                               | 294.8 ms ±  29.3 ms | 229.2 ms | 64.1 ms  | 11.43     |
+| Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
 | My Comp. parse                                   | 315.3 ms ±  28.6 ms | 251.0 ms | 64.3 ms  | 12        |
 | Interp.                                          | 743.4 ms ±  37.2 ms | 690.0 ms | 48.7 ms  |           |
 | [reference](https://github.com/lukesmithxyz/kjv) | 158.2 ms ±  33.5 ms | 203.3 ms | 29.8 ms  | 1.6       |
