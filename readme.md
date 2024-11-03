@@ -27,25 +27,18 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 ### Performance
 
 
-3.11.24 with hyperfine:
+3.11.24 now with hyperfine (and my processor seems to be dy):
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
 | Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
-| My Comp. parse                                   | 315.3 ms ±  28.6 ms | 251.0 ms | 64.3 ms  | 12        |
-| Interp.                                          | 743.4 ms ±  37.2 ms | 690.0 ms | 48.7 ms  |           |
+| My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 10.7      |
+| Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 12        |
+| Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 11.6      |
+| Interp.                                          | 647.2 ms ±  6.0 ms  | 608.2 ms | 43.8 ms  |           |
 | [reference](https://github.com/lukesmithxyz/kjv) | 158.2 ms ±  33.5 ms | 203.3 ms | 29.8 ms  | 1.6       |
 
-3.11.24 with a slower kernel:
-
-|                                                  | real   | user   | sys        | size (MB) |
-| ------------------------------------------------ | ------ | ------ | ---------- | ----------|
-| Current (bookless)                               | 0.390s | 0.290s | 0.100s     | 11.43     |
-| R. comp. parse                                   | 0.420s | 0.307s | 0.113s     | 12        |
-| My comp. parse                                   | 0.421s | 0.306s | 0.115s     | 12        |
-| Interp.                                          | 0.951s | 0.771s | 0.72s      |           |
-
-~~These are 2.11.24. 3.11.24 on the same things are slower, worrying, perhaps my computer's dying....~~ I reverted to a previous linux kernel though things still aren't optimal.
+1.11.24
 
 |                                                  | real   | user   | sys        | size (MB) |
 | ------------------------------------------------ | ------ | ------ | ---------- | ----------|
