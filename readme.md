@@ -27,7 +27,7 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 ### Performance
 
 
-3.11.24 now with hyperfine (and my processor seems to be dy):
+3.11.24 now with hyperfine (and my processor seems to be dying):
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
