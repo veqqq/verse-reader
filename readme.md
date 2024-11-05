@@ -27,12 +27,13 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 ### Performance
 
 
-3.11.24 now with hyperfine (and my processor seems to be dying):
+Now with hyperfine (and my processor seems to be dying):
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
 | Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
 | Common Lisp `bible-parse.lisp`                   | 10.0 ms ±   2.3 ms  | 6.5 ms   | 3.8 ms   | 63.6      |
+| Golang `bible-parse.go`                          | 31.4 ms ±  5.7 ms   | 32.7 ms  | 10 ms    | 2.0       |
 | My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 10.7      |
 | Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 12        |
 | Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 11.6      |
