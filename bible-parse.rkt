@@ -47,7 +47,7 @@
 
 ; Require the verse struct both normally and for-syntax
 (require 'verse-struct
-         (for-syntax 'verse-struct)) ; lsp falsely says not required
+         (for-syntax 'verse-struct)) ; lsp falsely says not required https://github.com/racket/drracket/issues/692
 
 ; Compile-time parse
 (begin-for-syntax

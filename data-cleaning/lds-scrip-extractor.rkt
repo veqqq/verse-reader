@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ; extracts from: https://github.com/mormon-documentation-project/lds-scriptures/blob/master/lds-scriptures.csv
 
@@ -35,7 +35,13 @@ Who is the son of Nephi, one of the disciples of Jesus Christ",BoM,4 Ne.,bm,4-ne
 19 book and verse, but book abreviated
 |#
 
-(require csv-reading)
+(require 
+  csv-reading
+  racket/file
+  racket/string
+  racket/port
+  racket/match)
+
 (define (split-csv-line line)
   (call-with-input-string line
     (λ (in)

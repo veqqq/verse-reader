@@ -32,6 +32,7 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
 | Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
+| Common Lisp `bible-parse.lisp`                   | 10.0 ms ±   2.3 ms  | 6.5 ms   | 3.8 ms   | 63.6      |
 | My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 10.7      |
 | Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 12        |
 | Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 11.6      |
@@ -56,3 +57,13 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 - [Ryan](https://www.reddit.com/r/Racket/comments/1gh0z38/how_to_embed_data_from_file_into_static_binary/lux9aob/)'s line version note, extremely fast fast compilation!
 - [Ryan](https://www.reddit.com/r/Racket/comments/1gh0z38/how_to_embed_data_from_file_into_static_binary/lux9aob/)'s comp parse version, 3-4s compilation and great execution. Now the base.
 - [my old](#dc9063a9a27227f3f2848f8c98974825c2fd58b6) comp time attempt without `#:prefab`
+
+
+
+| **Data Cleaners**                                | time                | user     | sys      | size (MB) |
+| ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
+| lds-scrip-extractor.rkt   w/ optimizations --cs  | 1.062 s ±  0.013 s  | 1.004 s  | 00.057 s | 9.4       |
+| lds-scrip-extractor.rkt                          | 1.843 s ±  0.724 s  | 1.730 s  | 0.104 s  | 12.1      |
+| lds-scrip-extractor.rkt --orig-exe      --cs     | 1.080 s ±  0.022 s  | 1.024 s  | 0.057 s  | 55.3      |
+| lds-scrip-extractor.lisp                         | 393.8 ms ±  53.4 ms | 291.2 ms | 44.4 ms  | 39.8      |
+| lds-scrip-extractor.lisp  (speed 3) (safety 0)   | 287.1 ms ±  32.5 ms | 188.6 ms | 25.2 ms  | 39.7      |
