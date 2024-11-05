@@ -1,71 +1,29 @@
 package main
 
 import (
-	"bufio"
-	_ "embed"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
 
-//go:embed kjv.tsv
-var bibleData string
-
 type BibleVerse struct {
-	Book    string
 	Abbrev  string
 	Chapter int
 	Verse   int
 	Text    string
 }
 
-// Parse string to extract verse
-func parseVerseLine(line string) (*BibleVerse, error) {
-	parts := strings.Split(line, "\t")
-	if len(parts) != 5 {
-		return nil, fmt.Errorf("invalid verse line format: %s", line)
-	}
-
-	chapter, err := strconv.Atoi(parts[2])
-	if err != nil {
-		return nil, fmt.Errorf("invalid chapter number: %s", parts[2])
-	}
-
-	verse, err := strconv.Atoi(parts[3])
-	if err != nil {
-		return nil, fmt.Errorf("invalid verse number: %s", parts[3])
-	}
-
-	return &BibleVerse{
-		Abbrev:  strings.ToLower(parts[1]),
-		Chapter: chapter,
-		Verse:   verse,
-		Text:    parts[4],
-	}, nil
-}
-
 var kjvVerses []BibleVerse
 
-func loadVerses() error {
-	scanner := bufio.NewScanner(strings.NewReader(bibleData))
-	for scanner.Scan() {
-		verse, err := parseVerseLine(scanner.Text())
-		if err == nil {
-			kjvVerses = append(kjvVerses, *verse)
-		}
-	}
-	return scanner.Err()
+// Allow ge, gen, gene etc. based on the abbreviated ge
+func matchBook(query, abbrev string) bool {
+	query = strings.ToLower(query)
+	return strings.HasPrefix(abbrev, query) || strings.HasPrefix(query, abbrev)
 }
 
 func displayVerse(verse BibleVerse) {
 	fmt.Printf("%s\n", verse.Text)
-}
-
-// ; Allow ge, gen, gene etc. based on the abbreviated ge
-func matchBook(query, abbrev string) bool {
-	query = strings.ToLower(query)
-	return strings.HasPrefix(abbrev, query) || strings.HasPrefix(query, abbrev)
 }
 
 func processQuery(query string) {
@@ -77,7 +35,6 @@ func processQuery(query string) {
 
 	var bookQuery string
 	var chapterVerse string
-
 	if len(parts) > 1 {
 		lastPart := parts[len(parts)-1]
 		if strings.Contains(lastPart, ":") || strings.ContainsAny(lastPart, "0123456789") {
@@ -158,11 +115,6 @@ func processQuery(query string) {
 }
 
 func main() {
-	if err := loadVerses(); err != nil {
-		fmt.Printf("Error loading verses: %v\n", err)
-		os.Exit(1)
-	}
-
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: kjv <book> [chapter:verse]")
 		os.Exit(1)

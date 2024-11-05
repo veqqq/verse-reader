@@ -1,0 +1,83 @@
+package main
+
+// this is a go file, but not marked due to go mod
+// it turns a .csv into a struct literal, so it it's precomputed
+// in the binary, which the current bible-parse.go needs
+
+// actually I put it in another .go file ~
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	if len(os.Args) != 3 {
+		fmt.Println("Usage: program <input.tsv> <output.go>")
+		os.Exit(1)
+	}
+
+	inputFile := os.Args[1]
+	outputFile := os.Args[2]
+
+	file, err := os.Open(inputFile)
+	if err != nil {
+		fmt.Printf("Error opening input file: %v\n", err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	var verses []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		verses = append(verses, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		os.Exit(1)
+	}
+
+	existingCode, err := os.ReadFile(outputFile)
+	if err != nil {
+		fmt.Printf("Error reading existing gO file: %v\n", err)
+		os.Exit(1)
+	}
+
+	out, err := os.Create(outputFile)
+	if err != nil {
+		fmt.Printf("Error creating output file: %v\n", err)
+		os.Exit(1)
+	}
+	defer out.Close()
+
+	// Something about this is wrong, but it's a one time deal so meh
+	lastBrace := strings.LastIndex(string(existingCode), "}")
+	if lastBrace == -1 {
+		fmt.Println("Could not find closing brace in existing code")
+		os.Exit(1)
+	}
+
+	out.Write(existingCode[:lastBrace])
+
+	// Add actual struct
+	fmt.Fprintln(out, "\nfunc init() {")
+	fmt.Fprintln(out, "\tkjvVerses = []BibleVerse{")
+
+	for _, line := range verses {
+		parts := strings.Split(line, "\t")
+		if len(parts) != 5 {
+			continue
+		}
+		fmt.Fprintf(out, "\t\t{%q, %s, %s, %q},\n", strings.ToLower(parts[1]),
+			parts[2],
+			parts[3],
+			parts[4])
+	}
+
+	fmt.Fprintln(out, "\t}")
+	fmt.Fprintln(out, "}")
+	fmt.Fprintln(out, "}")
+}
