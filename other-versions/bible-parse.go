@@ -2,13 +2,18 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
 
+//go:embed kjv.tsv
+var bibleData string
+
 type BibleVerse struct {
+	Book    string
 	Abbrev  string
 	Chapter int
 	Verse   int
@@ -42,41 +47,27 @@ func parseVerseLine(line string) (*BibleVerse, error) {
 
 var kjvVerses []BibleVerse
 
-func loadVerses(filename string) error {
-	file, err := os.Open(filename)
-	if err != nil {
-		return fmt.Errorf("error opening file: %v", err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
+func loadVerses() error {
+	scanner := bufio.NewScanner(strings.NewReader(bibleData))
 	for scanner.Scan() {
 		verse, err := parseVerseLine(scanner.Text())
 		if err == nil {
 			kjvVerses = append(kjvVerses, *verse)
 		}
 	}
-
 	return scanner.Err()
 }
 
 func displayVerse(verse BibleVerse) {
-	fmt.Println(verse.Text)
+	fmt.Printf("%s\n", verse.Text)
 }
 
-// ;Filter verses by book
-func hasPrefix(prefixes []string, s string) bool {
-	s = strings.ToLower(s)
-	for _, prefix := range prefixes {
-		prefix = strings.ToLower(prefix)
-		if len(prefix) <= len(s) && strings.HasPrefix(s, prefix) {
-			return true
-		}
-	}
-	return false
+// ; Allow ge, gen, gene etc. based on the abbreviated ge
+func matchBook(query, abbrev string) bool {
+	query = strings.ToLower(query)
+	return strings.HasPrefix(abbrev, query) || strings.HasPrefix(query, abbrev)
 }
 
-// Process query, display matching verses
 func processQuery(query string) {
 	parts := strings.Fields(query)
 	if len(parts) == 0 {
@@ -84,9 +75,9 @@ func processQuery(query string) {
 		os.Exit(1)
 	}
 
-	// Some books have spaces: "1 Kings"
 	var bookQuery string
 	var chapterVerse string
+
 	if len(parts) > 1 {
 		lastPart := parts[len(parts)-1]
 		if strings.Contains(lastPart, ":") || strings.ContainsAny(lastPart, "0123456789") {
@@ -102,7 +93,7 @@ func processQuery(query string) {
 	// Filter verses by book
 	matchingVerses := make([]BibleVerse, 0)
 	for _, verse := range kjvVerses {
-		if hasPrefix([]string{"ge", "gen", "gene"}, verse.Abbrev) { // Add more abbreviations as needed
+		if matchBook(bookQuery, verse.Abbrev) {
 			matchingVerses = append(matchingVerses, verse)
 		}
 	}
@@ -120,7 +111,7 @@ func processQuery(query string) {
 		return
 	}
 
-	// Handle chapter:verse format
+	// Chapter and verse: `genesis 1:1`
 	parts = strings.Split(chapterVerse, ":")
 	chapter, err := strconv.Atoi(parts[0])
 	if err != nil {
@@ -128,7 +119,6 @@ func processQuery(query string) {
 		os.Exit(1)
 	}
 
-	// Just chapter: `genesis 1`
 	chapterVerses := make([]BibleVerse, 0)
 	for _, verse := range matchingVerses {
 		if verse.Chapter == chapter {
@@ -137,7 +127,7 @@ func processQuery(query string) {
 	}
 
 	if len(parts) == 2 {
-		//; Chapter and verse: `genesis 1:1`
+		// Chapter and verse: `genesis 1:1`
 		verseNum, err := strconv.Atoi(parts[1])
 		if err != nil {
 			fmt.Printf("Invalid verse number: %s\n", parts[1])
@@ -152,12 +142,11 @@ func processQuery(query string) {
 				break
 			}
 		}
-
 		if !found {
 			fmt.Printf("No verse found for: %s %s\n", bookQuery, chapterVerse)
 		}
 	} else {
-		// Whole book queries: `genesis`
+		// Just chapter: `genesis 1`
 		if len(chapterVerses) == 0 {
 			fmt.Printf("No chapter found for: %s %s\n", bookQuery, chapterVerse)
 		} else {
@@ -169,7 +158,7 @@ func processQuery(query string) {
 }
 
 func main() {
-	if err := loadVerses("kjv.tsv"); err != nil {
+	if err := loadVerses(); err != nil {
 		fmt.Printf("Error loading verses: %v\n", err)
 		os.Exit(1)
 	}

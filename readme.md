@@ -12,6 +12,8 @@ Inspired by [https://github.com/layeh/kjv](https://github.com/layeh/kjv) and [ht
 - potentially change format to have chapter and verse together as 1:1, (even book), maybe faster execution as you just match to the exact line instead of checking multiple elements? 
 - many #ToDo:s littered about in `bible-parse.rkt`, soon binaries and further books will be available.
 
+- Abreviations in "KJV" are like 1king so "1 k" doesn't work. But in BoMormon, they are like "1 nep"
+
 ### Texts
 
 From [layeh](https://github.com/layeh):
@@ -33,7 +35,7 @@ Now with hyperfine (and my processor seems to be dying):
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
 | Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
 | Common Lisp `bible-parse.lisp`                   | 10.0 ms ±   2.3 ms  | 6.5 ms   | 3.8 ms   | 63.6      |
-| Golang `bible-parse.go`                          | 31.4 ms ±  5.7 ms   | 32.7 ms  | 10 ms    | 2.0       |
+| Golang `bible-parse.go`  with data inside        | 30.8 ms ±   2.4 ms  | 34.1 ms  | 10.8 ms  | 7.6       |
 | My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 10.7      |
 | Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 12        |
 | Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 11.6      |
