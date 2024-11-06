@@ -35,7 +35,7 @@ Now with hyperfine (and my processor seems to be dying):
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
-| Current (bookless)                               | 249.6 ms ±  9.0 ms  | 199.2 ms | 50.3 ms  | 11.6      |
+| Current                                          | 229.5 ms ±   2.7 ms  | 177.2 ms | 52.4 ms | 11.2      |
 | Common Lisp `bible-parse.lisp`                   | 10.0 ms ±   2.3 ms  | 6.5 ms   | 3.8 ms   | 63.6      |
 | Golang with embed    ([commit](https://github.com/veqqq/verse-reader/commit/30d78e839e5a284606605e245b67324595d7091d))                    | 30.8 ms ±   2.4 ms  | 34.1 ms  | 10.8 ms  | 7.6       |
 | Golang `bible-parse.go` data structs in file     | 3.6 ms ±   1.1 ms   | 1.3 ms   | 2.1 ms   | 9.1       |
