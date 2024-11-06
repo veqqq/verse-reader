@@ -20,18 +20,17 @@
   
   ; Changed to prefab for compile-time support
   (struct bible-verse (
-                      [abbrev #:mutable]
-                      [chapter #:mutable]
-                      [verse #:mutable]
-                      [text #:mutable])
-    #:prefab)
+                      abbrev 
+                      chapter
+                      verse
+                      text
+                      ) #:prefab)
   
   ; Parse string to extract verse
   (define (parse-verse-line line)
     (define parts (string-split line "\t"))
     (if (= (length parts) 5)
         (bible-verse
-         ;; note, no book
          (string-downcase (list-ref parts 1)) ; abbreviation
          (string->number (list-ref parts 2)) ; chapter
          (string->number (list-ref parts 3)) ; verse
@@ -39,11 +38,12 @@
         (begin
           (printf "Skipping non-verse line: ~a\n" line)
           #f)))
+          ; tried removing begin, replacing if with and
+          ; no change in speed, but worse potential error handling
   
-  (provide bible-verse bible-verse? parse-verse-line
-           bible-verse-abbrev 
-           bible-verse-chapter bible-verse-verse 
-           bible-verse-text))
+  (provide bible-verse parse-verse-line
+           bible-verse-abbrev bible-verse-chapter 
+           bible-verse-verse bible-verse-text))
 
 ; Require the verse struct both normally and for-syntax
 (require 'verse-struct
@@ -58,30 +58,31 @@
               (parse-verse-line line)))))
 
 ; Make parsed verses available at runtime via macro
-(define-syntax get-kjv-verses
-  (lambda (stx)
+(define-syntax (get-kjv-verses stx)
     (syntax-case stx ()
-      [(_) #`(quote #,kjv-verses)])))
+      [(_) #`(quote #,kjv-verses)]))
 
 ;; Logic Query etc. Parsing and Handling
 
 (define (display-verse verse)
-  ; (printf "~a:~a ~a\n"
-    (printf "~a\n"
-          ; (bible-verse-chapter verse)
-          ; (bible-verse-verse verse)
-          (bible-verse-text verse)))
+  (display (bible-verse-text verse))
+  " ")
 
 ; Process query, display matching verses
 ; So far, making this functional goes from .250 to 320ms
 (define (process-query verses query)
-  (define parts (string-split query " ")) ; #Todo: accept "1 king" instead of only 1king but check
-  (define book-query (string-join (if (> (length parts) 1) (drop-right parts 1) parts) " ")) ; n.b. accepts e.g. `2 Kings` fine
+  (define parts (string-split query " "))
+  (define (book-query l)
+    (string-downcase
+      (if (string->number (first l)) ; if first is a number, combime them, otherwise return first
+          (string-append (first l) (second l))
+          (first l))))
+
   (define chapter-verse (if (> (length parts) 1) (last parts) #f))
   
   ; Filter verses by book
   (define matching-verses
-    (filter (λ (verse) (string-prefix? (string-downcase book-query) (bible-verse-abbrev verse))) verses))
+    (filter (λ (verse) (string-prefix? (book-query parts) (bible-verse-abbrev verse))) verses))
   (when (null? matching-verses)
     (printf "No match found for: ~a\n" book-query)
     (exit 1))
