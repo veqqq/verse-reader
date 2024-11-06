@@ -20,11 +20,11 @@
   
   ; Changed to prefab for compile-time support
   (struct bible-verse (
-                      abbrev 
-                      chapter
-                      verse
-                      text
-                      ) #:prefab)
+                       abbrev 
+                       chapter
+                       verse
+                       text
+                       ) #:prefab)
   
   ; Parse string to extract verse
   (define (parse-verse-line line)
@@ -38,8 +38,8 @@
         (begin
           (printf "Skipping non-verse line: ~a\n" line)
           #f)))
-          ; tried removing begin, replacing if with and
-          ; no change in speed, but worse potential error handling
+  ; tried removing begin, replacing if with and
+  ; no change in speed, but worse potential error handling
   
   (provide bible-verse parse-verse-line
            bible-verse-abbrev bible-verse-chapter 
@@ -53,14 +53,13 @@
 (begin-for-syntax
   (define-runtime-path kjv-path "kjv.tsv")
   (define kjv-verses
-    (filter values
-            (for/list ([line (in-list (with-input-from-file kjv-path port->lines))])
-              (parse-verse-line line)))))
+    (for/list ([line (in-list (with-input-from-file kjv-path port->lines))]
+               #:when (parse-verse-line line)) (parse-verse-line line))))
 
 ; Make parsed verses available at runtime via macro
 (define-syntax (get-kjv-verses stx)
-    (syntax-case stx ()
-      [(_) #`(quote #,kjv-verses)]))
+  (syntax-case stx ()
+    [(_) #`(quote #,kjv-verses)]))
 
 ;; Logic Query etc. Parsing and Handling
 
@@ -72,43 +71,47 @@
 ; So far, making this functional goes from .250 to 320ms
 (define (process-query verses query)
   (define parts (string-split query " "))
-  (define (book-query l)
+  (define book-query ; making this a func added 10ms
     (string-downcase
-      (if (string->number (first l)) ; if first is a number, combime them, otherwise return first
-          (string-append (first l) (second l))
-          (first l))))
+     (if (string->number (first parts)) ; if first is a number, combime them, otherwise return first
+         (string-append (first parts) (second parts))
+         (first parts))))
 
-  (define chapter-verse (if (> (length parts) 1) (last parts) #f))
+  ; (define chapter-verse (if (> (length parts) 1) (last parts) #f))
+  (define chapter-verse 
+    (and (> (length parts) 1)
+         (let ([last-part (last parts)])
+           (and (or (string->number last-part)  ; pure number like "1"
+                    (regexp-match? #rx"[0-9]" last-part)) ; contains number like "1:1"
+                last-part))))
   
   ; Filter verses by book
   (define matching-verses
-    (filter (λ (verse) (string-prefix? (book-query parts) (bible-verse-abbrev verse))) verses))
+    (for/list ([verse verses]
+               #:when (string-prefix? book-query (bible-verse-abbrev verse))) verse))
   (when (null? matching-verses)
     (printf "No match found for: ~a\n" book-query)
     (exit 1))
-  
-  (cond
-    ; Whole book queries: `genesis`
-    [(not chapter-verse)
-     (for-each display-verse matching-verses)]
-    ; Handle specific queries: `genesis 1:1` or `genesis 1`
-    [else
-     (define verse-parts (string-split chapter-verse ":"))
-     (define chapter (string->number (car verse-parts)))
-     (define filtered-verses
-       (filter (λ (verse) (= (bible-verse-chapter verse) chapter))
-               matching-verses))
-     (cond
-       ; Chapter and verse: `genesis 1:1`
-       [(= (length verse-parts) 2)
-        (define verse-num (string->number (cadr verse-parts)))
-        (define specific-verse
-          (filter (λ (verse) (= (bible-verse-verse verse) verse-num))
-                  filtered-verses))
-        (for-each display-verse specific-verse)]
-       ; Just chapter: `genesis 1`
-       [else
-        (for-each display-verse filtered-verses)])]))
+
+  ; whole book: "Genesis"
+  (if (not chapter-verse)
+      (begin (for-each display-verse matching-verses) (newline))
+      ; Handle specific queries: `genesis 1:1` or `genesis 1`
+      (let* ((verse-parts (string-split chapter-verse ":"))
+             (chapter (string->number (first verse-parts)))
+             (filtered-verses
+              (for/list ([verse matching-verses]
+                         #:when (= (bible-verse-chapter verse) chapter)) verse)))
+        (cond
+          ; Chapter and verse: `genesis 1:1`
+          [(= (length verse-parts) 2)
+           (define verse-num (string->number (second verse-parts)))
+           (for ([verse (in-list filtered-verses)]
+                 #:when (= (bible-verse-verse verse) verse-num))
+             (display-verse verse)) (newline)]
+          ; Just chapter: `genesis 1`
+          [else
+           (for-each display-verse filtered-verses)(newline)]))))
 
 (module+ main
   (define verses (get-kjv-verses))
