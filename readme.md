@@ -12,7 +12,7 @@ Inspired by [https://github.com/layeh/kjv](https://github.com/layeh/kjv) and [ht
 - potentially change format to have chapter and verse together as 1:1, (even book), maybe faster execution as you just match to the exact line instead of checking multiple elements? 
 - many #ToDo:s littered about in `bible-parse.rkt`, soon binaries and further books will be available.
 
-- Abreviations in "KJV" are like 1king so "1 k" doesn't work. But in BoMormon, they are like "1 nep"
+- change BoM etc. abbreviations to remove spaces: 1 ne -> 1ne
 
 ### Texts
 
@@ -25,6 +25,8 @@ From [Luke Smith](https://github.com/LukeSmithxyz):
 
 - KJV + Apocrophya (n.b. I eliminated 1 line in Sirach: "A Prayer to...")
 
+From [Mormon Documentation Project](https://github.com/mormon-documentation-project/lds-scriptures/):
+- Book of Mormon (and soon others) (n.b. Nephi 3 and 4 are corrupted in almost all online sources; my initial attempts to scrape the whole book failed here too. I was able to easily fix the .csv here though!)
 
 ### Performance
 

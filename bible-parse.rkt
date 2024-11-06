@@ -73,6 +73,7 @@
           (bible-verse-text verse)))
 
 ; Process query, display matching verses
+; So far, making this functional goes from .250 to 320ms
 (define (process-query verses query)
   (define parts (string-split query " ")) ; #Todo: accept "1 king" instead of only 1king but check
   (define book-query (string-join (if (> (length parts) 1) (drop-right parts 1) parts) " ")) ; n.b. accepts e.g. `2 Kings` fine
