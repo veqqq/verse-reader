@@ -30,19 +30,19 @@ From [Mormon Documentation Project](https://github.com/mormon-documentation-proj
 
 ### Performance
 
-`min-test.rkt` gets `Time (mean ± σ):      86.8 ms ±   2.8 ms    [User: 61.5 ms, System: 25.1 ms]` so the current's 220ms is only 3x slower than Racket's fastest.
+`min-test.rkt` gets `Time (mean ± σ):      86.8 ms ±   2.8 ms    [User: 61.5 ms, System: 25.1 ms]` so the current's 220ms is only 3x slower than Racket's fastest. The refactored versions using hash maps or all dated just saved directly in the file (like the Go version) have identical performance, although `inline-test.rkt` compiles faster to an only 51mb static binary.
 
 With `hyperfine`:
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
-| Current                                          | 222.1 ms ±   2.9 ms ms  | 168.9 ms | 52.6 ms | 11.2      |
+| Current                                          | 222.1 ms ±   2.9 ms | 168.9 ms | 52.6 ms  | 55        |
 | Common Lisp `bible-parse.lisp`                   | 10.0 ms ±   2.3 ms  | 6.5 ms   | 3.8 ms   | 63.6      |
 | Golang with embed    ([commit](https://github.com/veqqq/verse-reader/commit/30d78e839e5a284606605e245b67324595d7091d))                    | 30.8 ms ±   2.4 ms  | 34.1 ms  | 10.8 ms  | 7.6       |
 | Golang `bible-parse.go` data structs in file     | 3.6 ms ±   1.1 ms   | 1.3 ms   | 2.1 ms   | 9.1       |
-| My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 10.7      |
-| Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 12        |
-| Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 11.6      |
+| My Comp. parse                                   | 268.6 ms ±  10.4 ms | 207.4 ms | 61.3 ms  | 54        |
+| Ryan's Comp. parse                               | 275.3 ms ±  10.3 ms | 221.5 ms | 53.9 ms  | 56        |
+| Ryan's lines                                     | 798.6 ms ±  21.1 ms | 727.5 ms | 70.7 ms  | 55.2      |
 | Interp.                                          | 647.2 ms ±  6.0 ms  | 608.2 ms | 43.8 ms  |           |
 | [reference](https://github.com/lukesmithxyz/kjv) | 158.2 ms ±  33.5 ms | 203.3 ms | 29.8 ms  | 1.6       |
 
