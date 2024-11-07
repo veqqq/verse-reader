@@ -30,8 +30,9 @@ From [Mormon Documentation Project](https://github.com/mormon-documentation-proj
 
 ### Performance
 
+`min-test.rkt` gets `Time (mean ± σ):      86.8 ms ±   2.8 ms    [User: 61.5 ms, System: 25.1 ms]` so the current's 220ms is only 3x slower than Racket's fastest.
 
-Now with hyperfine (and my processor seems to be dying):
+With `hyperfine`:
 
 |                                                  | time                | user     | sys      | size (MB) |
 | ------------------------------------------------ | ------------------- | ---------| -------- | ----------|
@@ -45,7 +46,7 @@ Now with hyperfine (and my processor seems to be dying):
 | Interp.                                          | 647.2 ms ±  6.0 ms  | 608.2 ms | 43.8 ms  |           |
 | [reference](https://github.com/lukesmithxyz/kjv) | 158.2 ms ±  33.5 ms | 203.3 ms | 29.8 ms  | 1.6       |
 
-1.11.24
+1.11.24 with `time`:
 
 |                                                  | real   | user   | sys        | size (MB) |
 | ------------------------------------------------ | ------ | ------ | ---------- | ----------|
