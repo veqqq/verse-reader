@@ -30,7 +30,7 @@ From [Mormon Documentation Project](https://github.com/mormon-documentation-proj
 
 ### Performance
 
-`min-test.rkt` gets `Time (mean ± σ):      86.8 ms ±   2.8 ms    [User: 61.5 ms, System: 25.1 ms]` so the current's 220ms is only 3x slower than Racket's fastest. The refactored versions using hash maps or all dated just saved directly in the file (like the Go version) have identical performance, although `inline-test.rkt` compiles faster to an only 51mb static binary.
+`min-test.rkt` gets `Time (mean ± σ):      86.8 ms ±   2.8 ms    [User: 61.5 ms, System: 25.1 ms]` so the current's 220ms is only 3x slower than Racket's fastest. The refactored versions using hash maps or all dated just saved directly in the file (like the Go version) have identical performance, although `inline-test.rkt` compiles faster to an only 51mb static binary. Racket packs everything into an ELF container, which apparently takes 80ms to initialize, I don't yet understand why Typed Racket has a slower initialization.
 
 With `hyperfine`:
 
